@@ -9,15 +9,19 @@
   <code>skio</code> is a naive, purely relational interpreter for the SKI Combinator Calculus, written in miniKanren. It can evaluate SKI expressions <em>forwards</em> (computing results) and <em>backwards</em> (synthesizing expressions that produce a given result).
 </p>
 
+<p>
+  <em>Forked from <a href="https://github.com/jpt4/skio">jpt4/skio</a></em>
+</p>
+
 <h3>The SKI Combinators</h3>
 
 <p>
   The three primitive combinators are <code>S</code>, <code>K</code>, and <code>I</code>, with the following reduction rules:
 </p>
 <ul>
-    <li><code>I x → x</code> (Identity)</li>
-  <li><code>K x y → x</code> (Constant)</li>
-  <li><code>S x y z → (x z) (y z)</code>code> (Substitution)</li>
+  <li><code>I x → x</code> (Identity)</li>
+<li><code>K x y → x</code> (Constant)</li>
+<li><code>S x y z → (x z) (y z)</code> (Substitution)</li>
 </ul>
 
 <h3>Forward Evaluation with <code>skio</code></h3>
@@ -26,8 +30,7 @@
   The <code>skio</code> relation interprets SKI expressions regardless of parenthesization, converting them to left-associative normal form. For example, evaluating <code>S I I a</code>:
 </p>
 
-<div class="live" id="ex1">
-  (skio '(S I I a) 1)</div>div>
+<div class="live" id="ex1">(skio '(S I I a) 1)</div>
 
 <p>
   The result <code>((a a))</code> shows that <code>S I I</code> applied to <code>a</code> produces <code>(a a)</code> — this is the "duplicator" combinator!
@@ -37,22 +40,19 @@
   Here's a more complex example showing self-application:
 </p>
 
-<div class="live" id="ex2">
-  (skio '(S I I (S I I)) 1)</div>div>
+<div class="live" id="ex2">(skio '(S I I (S I I)) 1)</div>
 
 <p>
   And a demonstration of the <code>K</code> combinator discarding its second argument:
 </p>
 
-<div class="live" id="ex3">
-(skio '(S (K a) (S I I) b) 1)</div>div>
+<div class="live" id="ex3">(skio '(S (K a) (S I I) b) 1)</div>
 
 <p>
 Since miniKanren's evaluation order is unspecified, requesting more results can show intermediate reduction steps:
 </p>
 
-<div class="live" id="ex4">
-(skio '(S I I (S (K a) (S I I))) 3)</div>div>
+<div class="live" id="ex4">(skio '(S I I (S (K a) (S I I))) 3)</div>
 
 <h3>Reverse Synthesis with <code>skio-syn</code></h3>
 
@@ -60,8 +60,7 @@ Since miniKanren's evaluation order is unspecified, requesting more results can 
 The relational nature of miniKanren allows us to run the interpreter <em>backwards</em>. Given a target result, <code>skio-syn</code> synthesizes SKI expressions that evaluate to that result:
 </p>
 
-<div class="live" id="ex5">
-(skio-syn 'a 10)</div>div>
+<div class="live" id="ex5">(skio-syn 'a 10)</div>
 
 <p>
   The results show 10 different SKI expressions that all reduce to <code>a</code>:
@@ -77,16 +76,16 @@ The relational nature of miniKanren allows us to run the interpreter <em>backwar
   The <code>laso</code> relation converts expressions to fully left-associative parenthesized form:
 </p>
 
-<div class="live" id="ex6">
-  (run 1 (q) (laso '(a b c d) q))</div>div>
+<div class="live" id="ex6">(run 1 (q) (laso '(a b c d) q))</div>
 
-{% endblock %}
+{% endblock %}</code>
 </p>
 </p></em></code>
 </p>
 </p></code></code>
 </p>
 </p></li></code></code></li>
-</ul>
+</ul></code></code>
+</p>
 </p></em></em></code>
 </p></h2>
