@@ -2,7 +2,7 @@
 set -e
 
 cat .io.livecode.ch/header.txt $1 .io.livecode.ch/footer.txt >out.scm
-touch load.scm
+echo '(load "miniKanren-with-symbolic-constraints/mk.scm")' >load.scm
 if [ -s $2 ]
 then
   mv $2 extra.scm
