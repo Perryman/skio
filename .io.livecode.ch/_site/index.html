@@ -15,39 +15,125 @@ written in miniKanren.
 <em>Forked from <a href="https://github.com/jpt4/skio">jpt4/skio</a></em>
 </p>
 
+<h3>The SKI Combinators (brief)</h3>
+
+<ul>
+  <li><strong>I</strong>: identity — <code>I x → x</code></li>
+  <li><strong>K</strong>: constant — <code>K x y → x</code></li>
+  <li><strong>S</strong>: substitution — <code>S x y z → (x z) (y z)</code></li>
+</ul>
+
+<details>
+  <summary><strong>How this interpreter works</strong></summary>
+
+  <p>
+  <code>skio</code> interprets input expressions regardless of parenthesization,
+  converting them to left-associative normal form if necessary, and is best used
+  for forward evaluation.
+  </p>
+
+  <p>
+  <code>skio-syn</code> elides the left-associativity preprocessor, thus requiring
+  fully parenthesized input expressions, to allow for greater variety during
+  reverse expression synthesis.
+  </p>
+
+  <p>
+  <code>laso</code> converts expressions to their fully left-associative,
+  parenthesized forms.
+  </p>
+
+  <p>
+  <code>io</code>, <code>ko</code>, and <code>so</code> each perform a single step
+  of the eponymous reduction on fully left-associative expressions; these are
+  useful for checking manual derivations.
+  </p>
+
+  <p>
+  An input expression is a quoted (potentially nested) list of symbols,
+  including the reserved symbols <code>S</code>, <code>K</code>, and <code>I</code>.
+  </p>
+
+  <p>
+  For both <code>skio</code> and <code>skio-syn</code>, the number of results
+  requested must be included, e.g. <code>(skio EXP NUM)</code>. Because the
+  evaluation order of miniKanren is unspecified, the most reduced answer may not
+  be the first produced, especially for expressions which simulate recursion.
+  However, if an answer exists, then there exists a sufficiently large
+  <code>NUM</code> such that the result set will include it.
+  </p>
+</details>
+
 <h3>Examples</h3>
 
-<p>Forward evaluation:</p>
+<p><strong>Forward evaluation.</strong></p>
+
+<p>
+Applying <code>S I I</code> to <code>a</code>.  
+Expected result: duplication of <code>a</code>.
+</p>
 
 <div class="live" id="ex1">
 (skio '(S I I a) 1)
 </div>
 
+<p>
+Applying <code>S I I</code> to itself.  
+Expected result: a self-applied SKI structure.
+</p>
+
 <div class="live" id="ex2">
 (skio '(S I I (S I I)) 1)
 </div>
+
+<p>
+Using <code>K</code> to discard an argument while duplicating another.  
+Expected result: <code>a</code> survives, <code>b</code> is duplicated.
+</p>
 
 <div class="live" id="ex3">
 (skio '(S (K a) (S I I) b) 1)
 </div>
 
-<p>Building expressions step by step:</p>
+<p><strong>Building expressions step by step.</strong></p>
+
+<p>
+Define a reusable subexpression.
+</p>
 
 <div class="live" id="ex4">
 (define beta '(S (K a) (S I I)))
 beta
 </div>
 
+<p>
+Construct a larger expression programmatically.
+</p>
+
 <div class="live" id="ex5">
+(define beta '(S (K a) (S I I)))
 (define exp (list 'S 'I 'I beta))
 exp
 </div>
 
+<p>
+Evaluate the expression, requesting multiple results to expose intermediate
+reductions.
+</p>
+
 <div class="live" id="ex6">
+(define beta '(S (K a) (S I I)))
+(define exp (list 'S 'I 'I beta))
 (skio exp 3)
 </div>
 
-<p>Reverse synthesis:</p>
+<p><strong>Reverse synthesis.</strong></p>
+
+<p>
+Run the interpreter backwards: synthesize SKI expressions that reduce to
+<code>a</code>.  
+Expected result: a variety of expressions, from trivial to increasingly complex.
+</p>
 
 <div class="live" id="ex7">
 (skio-syn 'a 10)
